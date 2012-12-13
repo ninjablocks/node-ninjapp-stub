@@ -45,9 +45,15 @@ app.configure('development', function(){
  * Middleware
  */
 
+
 var requiresAuthentication = function(req,res,next) {
+
   if (!req.session.ninja) {
-    res.redirect('/auth/ninjablocks');
+    if (req.accepts('html')) {
+      res.redirect('/auth/ninjablocks');
+    } else {
+      res.json({error:'Unauthorized',401})
+    }
     return;
   }
   next();
@@ -64,19 +70,19 @@ authom.createServer({
   scope:['all']
 });
 
-authom.on('auth',routes.handleNinjaAuthentication);
+authom.on('auth', routes.handleNinjaAuthentication);
 
 authom.on('error',function(req,res,data) {
   res.send('There was an error authenticating')
 });
 
-app.get('/auth/:service',authom.app);
+app.get('/auth/:service', authom.app);
 
 /**
  * Proxy all /rest/v0 routes to Ninja Cloud
  */
 
-app.all('/rest/v0/*',routes.proxy);
+app.all('/rest/v0/*', requiresAuthentication, routes.proxy);
 
 /**
  * App Routes

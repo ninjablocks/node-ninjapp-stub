@@ -10,11 +10,6 @@ exports.handleNinjaAuthentication = function(req,res,ninja) {
 
 exports.proxy = function(req,res) {
 
-  if (!req.session.token) {
-    res.json({error:'Unauthorised'},401);
-    return;
-  }
-
   request({
       url:'https://api.ninja.is'+req.url,
       qs: { access_token:req.session.token },
