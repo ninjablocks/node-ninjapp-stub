@@ -52,7 +52,7 @@ var requiresAuthentication = function(req,res,next) {
     if (req.accepts('html')) {
       res.redirect('/auth/ninjablocks');
     } else {
-      res.json({error:'Unauthorized',401})
+      res.json({error:'Unauthorized'},401)
     }
     return;
   }
