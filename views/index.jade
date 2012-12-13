@@ -3,7 +3,31 @@ extends layout
 block content
   h1= title
   p Welcome #{ninja.name}
-  h3 Your Devices:
+  h3 Your Devices (Through Express):
   ul
       each device, guid in devices
         li #{guid} : #{device.shortName}
+
+  h3 Your Devices (Through Javascript)
+  ul#devices
+
+  script(type="text/javascript")
+    var ninja = new Ninja({ server: ''});
+
+    var devicesContainer = document.getElementById("devices");
+
+    ninja.User.GetDevices(function(data) {
+
+      for(var i=0; i<data.devices.length; i++) {
+        var device = data.devices[i];
+        var li = document.createElement("li");
+        var deviceText = document.createTextNode(device.GUID() + " : " + ((device.Options.name) ? device.Options.name : ''));
+
+        li.appendChild(deviceText);
+        devicesContainer.appendChild(li);
+      }
+      
+
+
+      
+    });
