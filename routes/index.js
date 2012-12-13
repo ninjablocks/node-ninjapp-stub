@@ -1,4 +1,21 @@
-var ninjaBlocks = require('ninja-blocks');
+var ninjaBlocks = require('ninja-blocks')
+    , request = require('request');
+
+exports.proxy = function(req,res) {
+
+  if (!req.session.ninja) {
+    res.json({error:'Unauthorised'},401);
+    return;
+  }
+
+  var opts = {
+      url:'https://api.ninja.is'+req.url,
+      qs: { access_token:req.session.token },
+      json:true
+  };
+
+  request(opts).pipe(res);
+}
 
 exports.handleNinjaAuthentication = function(req,res,ninja) {
   req.session.ninja = ninja.data;

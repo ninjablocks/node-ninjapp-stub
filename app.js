@@ -27,6 +27,7 @@ app.configure(function(){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(function(req,res,next) {
+    res.setHeader( 'X-Powered-By', "A bad-ass mother who don't take no crap off of nobody!" );
     req.redisClient = redisClient;
     next();
   });
@@ -71,6 +72,8 @@ authom.on('error',function(req,res,data) {
  */
 
 app.get('/', requiresSignin, routes.index);
+
+app.all('/rest/v0/*',routes.proxy);
 /*
   Auth routes
  */
