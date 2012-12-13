@@ -45,10 +45,9 @@ app.configure('development', function(){
  * Middleware
  */
 
-
 var requiresAuthentication = function(req,res,next) {
 
-  if (!req.session.ninja) {
+  if (!req.session.token || !req.session.ninja) {
     if (req.accepts('html')) {
       res.redirect('/auth/ninjablocks');
     } else {
