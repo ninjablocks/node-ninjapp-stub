@@ -8,7 +8,6 @@
     "request":"latest",
     "authom":"https://github.com/thatguydan/authom/tarball/master",
     "redis-url": "latest",
-    "redis": "latest",
     "connect-redis":"latest",
     "ninja-blocks":"latest"
   },

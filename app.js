@@ -28,6 +28,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(function(req,res,next) {
     res.setHeader( 'X-Powered-By', "A bad-ass mother who don't take no crap off of nobody!" );
+    // Share the redis client to all the requests
     req.redisClient = redisClient;
     next();
   });
@@ -39,17 +40,12 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
-authom.createServer({
-  service:"ninjablocks",
-  id:process.env.NINJA_CLIENT_ID,
-  secret:process.env.NINJA_CLIENT_SECRET,
-  scope:['all']
-});
 
-/*
-  Middleware
+/**
+ * Middleware
  */
-var requiresSignin = function(req,res,next) {
+
+var requiresAuthentication = function(req,res,next) {
   if (!req.session.ninja) {
     res.redirect('/auth/ninjablocks');
     return;
@@ -57,30 +53,38 @@ var requiresSignin = function(req,res,next) {
   next();
 }
 
-/*
-    Authom configuration
+/**
+ * Authom configuration
  */
+
+authom.createServer({
+  service:"ninjablocks",
+  id:process.env.NINJA_CLIENT_ID,
+  secret:process.env.NINJA_CLIENT_SECRET,
+  scope:['all']
+});
 
 authom.on('auth',routes.handleNinjaAuthentication);
 
 authom.on('error',function(req,res,data) {
-  console.log(data);
+  res.send('There was an error authenticating')
 });
 
-/*
-  App Routes
- */
+app.get('/auth/:service',authom.app);
 
-app.get('/', requiresSignin, routes.index);
+/**
+ * Proxy all /rest/v0 routes to Ninja Cloud
+ */
 
 app.all('/rest/v0/*',routes.proxy);
-/*
-  Auth routes
+
+/**
+ * App Routes
  */
 
-app.get("/auth/:service",authom.app);
+app.get('/', requiresAuthentication, routes.index);
 
 
 http.createServer(app).listen(app.get('port'), function(){
-  console.log("Ninja Security listening on port " + app.get('port'));
+  console.log("Ninja listening on port " + app.get('port'));
 });
