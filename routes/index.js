@@ -10,7 +10,7 @@ exports.handleNinjaAuthentication = function(req,res,ninja) {
 
 exports.proxy = function(req,res) {
 
-  if (!req.session.ninja) {
+  if (!req.session.token) {
     res.json({error:'Unauthorised'},401);
     return;
   }
