@@ -1,0 +1,3 @@
+[submodule "yeoman/app/vendor/browser-ninja-blocks"]
+	path = yeoman/app/vendor/browser-ninja-blocks
+	url = https://jmanoto@github.com/ninjablocks/browser-ninja-blocks.git
