@@ -1,0 +1,3 @@
+[submodule "public/js/browser-ninja-blocks"]
+    path = public/js/browser-ninja-blocks
+    url = https://github.com/ninjablocks/browser-ninja-blocks.git
